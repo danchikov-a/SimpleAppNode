@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/main.css">
+<body>
+    <div class="mainContainer">
+        <div class="left">
+            <table id="table">
+                <tr>
+                    <th>Название</th>
+                    <th>Вес</th>
+                    <th>Дата</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                {{#each journeys}}
+                    <tr>
+                        <td>{{this.name}}</td>
+                        <td>{{this.weight}}</td>
+                        <td>{{this.date}}</td>
+                        <td><img src="uploads/{{this.fileName}}" width="100"
+                                 height="100"/></td>
+                        <td>
+                            <form action="delete/{{this.id}}" method="POST" style="display:inline;">
+                                <input class="subscribe" type="submit" value="Delete"/>
+                            </form>
+                        </td>
+                    </tr>
+                {{/each}}
+            </table>
+        </div>
+        <div class="right">
+            <form class="container" action="/create" method="post" enctype="multipart/form-data">
+                <label>
+                    Название шаурмы
+                    <input type="text" name="name" placeholder="Введите название" required>
+                </label>
+                <label>
+                    Вес
+                    <input type="number" name="weight" placeholder="Введите вес" required>
+                </label>
+                <label for="date">
+                    Выберите дату выпуска:
+                    <input id="date" type="date" name="date" required>
+                </label>
+
+                <input accept=".png, .jpg" type="file" name="file" placeholder="выберите файл">
+                <button class="subscribe">Отправить</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
