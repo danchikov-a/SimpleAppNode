@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="qwe">
     <TopMenu></TopMenu>
     <div class="row">
-      <ShawarmaComponent style="width: 33%" v-if="editRow" :shawarma="null"></ShawarmaComponent>
-      <div style="width: 33%" class="col-sm" :key="shawarma" v-for="shawarma in shawarmas">
+      <ShawarmaComponent class="col-4" v-if="editRow" :shawarma="null"></ShawarmaComponent>
+      <div style="width: 33%" class="col-4" :key="shawarma" v-for="shawarma in shawarmas">
         <ShawarmaComponent :shawarma="shawarma"></ShawarmaComponent>
       </div>
     </div>
@@ -34,15 +34,14 @@ export default {
       return this.shawarmasFromBack;
     },
     ...mapGetters({
-          editRow: 'getEditRow',
-          shawarmas: 'getShawarmas',
-        }
-    ),
+      editRow: 'getEditRow',
+      shawarmas: 'getShawarmas',
+    }),
   },
   methods: {
-    ...mapActions(
-        {fetchShawarmas: "fetchShawarmas"}
-    ),
+    ...mapActions({
+      fetchShawarmas: "fetchShawarmas"
+    }),
   },
   mounted() {
     this.fetchShawarmas();
@@ -58,5 +57,12 @@ export default {
   justify-content: space-between;
   padding-bottom: 7%;
   margin-top: 2%;
+}
+.qwe {
+  background: url("../assets/загружено.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
 </style>

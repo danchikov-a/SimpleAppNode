@@ -136,12 +136,13 @@ export default {
   padding-bottom: 25px;
   margin-left: 25px;
   margin-top: 20px;
+  background-color: white;
 }
 
 .button-order {
   background: red;
   border-radius: 25px;
-  height: 20px;
+
   padding: 5px 20px;
   color: white;
   margin-top: 75px;

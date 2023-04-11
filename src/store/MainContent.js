@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from "axios";
+import router from "@/routes/routes";
 
 Vue.use(Vuex)
 
@@ -10,6 +11,7 @@ const store = new Vuex.Store({
         shawarmas: [],
         shawarmaToSave: null,
         shawarmaEditId: null,
+        token: null,
     },
     getters: {
         getEditRow(state) {
@@ -38,8 +40,15 @@ const store = new Vuex.Store({
     },
     actions: {
         fetchShawarmas({state}) {
-            axios.get("http://localhost:3000/api/shawarmas").then(r => {
+            console.log('token', state.token);
+            axios.get("http://localhost:3000/api/shawarmas", {
+                params: {
+                    token: state.token
+                }
+            }).then(r => {
                 state.shawarmas = r.data;
+            }).catch(() => {
+                router.push('/registration');
             });
         },
         saveShawarma({state, dispatch}) {
@@ -76,7 +85,27 @@ const store = new Vuex.Store({
             }).catch(err => {
                 console.log('err', err);
             });
-        }
+        },
+        // eslint-disable-next-line no-empty-pattern
+        register({state}, user) {
+            axios.post("http://localhost:3000/api/shawarmas/register", {
+                name: user.name,
+                email: user.email,
+                password: user.password,
+            }, ).then(r => {
+                state.token = r.data.token;
+                router.push('/main-content');
+            });
+        },
+        authorize({state}, user) {
+            axios.post("http://localhost:3000/api/shawarmas/authorize", {
+                email: user.email,
+                password: user.password,
+            }, ).then(r => {
+                state.token = r.data.token;
+                router.push('/main-content');
+            });
+        },
     }
 })
 
