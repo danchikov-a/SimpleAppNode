@@ -126,9 +126,41 @@ app.post('/api/shawarmas/register', async function (request, response) {
 
 app.post('/api/shawarmas/authorize', async function (request, response) {
     // TODO: Implement user registration logic here
-    console.log('user', request.body);
 
     let userFromRequest = request.body;
+
+    const hashedPassword = await bcrypt.hash(userFromRequest.password, 10)
+
+    let user = new User(userFromRequest.name, userFromRequest.email, hashedPassword);
+
+    let pass = null;
+    let q = user.getUser();
+
+    database.query(user.getUser(), function (error, result) {
+        if (error) {
+            return console.log(error.message)
+        }
+
+        bcrypt.compare(userFromRequest.password, result[0].password, function(err, res) {
+            if (err){
+                // handle error
+            }
+            if (res) {
+                console.log('matched');
+
+                const token = jwt.sign({ email: userFromRequest.email, role: 2 }, jwtKey, {
+                    algorithm: "HS256",
+                    expiresIn: "30m",
+                })
+
+                response.json({ token })
+            } else {
+                console.log('MISmatched');
+                response.status(403);
+            }
+        });
+    });
+
 /*
     const hashedPassword = await bcrypt.hash(userFromRequest.password, 10)
 

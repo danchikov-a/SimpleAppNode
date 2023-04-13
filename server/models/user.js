@@ -7,8 +7,11 @@ module.exports = class User {
     }
 
     save() {
-        console.log(this);
         return `INSERT INTO users(name, email, password) \
                      VALUES('${this.name}','${this.email}', '${this.password}')`;
+    }
+
+    getUser() {
+        return `SELECT password FROM users where email = '${this.email}'`;
     }
 }

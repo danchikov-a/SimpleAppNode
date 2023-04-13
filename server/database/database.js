@@ -21,6 +21,7 @@ function executeQuery(sql, callback) {
                     if (error) {
                         return callback(error, null);
                     }
+                    console.log(results);
                     return callback(null, results);
                 });
             }

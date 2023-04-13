@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from "axios";
 import router from "@/routes/routes";
+import cookie from 'vue-cookies';
 
 Vue.use(Vuex)
 
@@ -94,6 +95,7 @@ const store = new Vuex.Store({
                 password: user.password,
             }, ).then(r => {
                 state.token = r.data.token;
+                cookie.set('token', state.token);
                 router.push('/main-content');
             });
         },
@@ -101,9 +103,11 @@ const store = new Vuex.Store({
             axios.post("http://localhost:3000/api/shawarmas/authorize", {
                 email: user.email,
                 password: user.password,
-            }, ).then(r => {
+            }).then(r => {
                 state.token = r.data.token;
                 router.push('/main-content');
+            }).catch(() => {
+                router.push('/login');
             });
         },
     }

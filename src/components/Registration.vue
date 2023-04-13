@@ -38,15 +38,9 @@
                       </div>
 
                       <div class="text-center pt-1 mb-5 pb-1">
-                        <button @click="register" class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="button">Зарегистрироваться</button>
-                        <!--                      <a class="text-muted" href="#!">Forgot password?</a>-->
+                        <button @click="register" class="col-5 btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="button">Зарегистрироваться</button>
+                        <button @click="$router.push('/login')" class="col-5 offset-md-1 btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" style="background-color: red" type="button">Войти</button>
                       </div>
-
-                      <!--                    <div class="d-flex align-items-center justify-content-center pb-4">
-                                            <p class="mb-0 me-2">Don't have an account?</p>
-                                            <button type="button" class="btn btn-outline-danger">Create new</button>
-                                          </div>-->
-
                     </form>
 
                   </div>
