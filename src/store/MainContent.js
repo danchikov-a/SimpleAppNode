@@ -13,10 +13,16 @@ const store = new Vuex.Store({
         shawarmaToSave: null,
         shawarmaEditId: null,
         token: null,
+        user: null,
+        bucketItems: [],
+        amountOfBucketElements: 0,
     },
     getters: {
         getEditRow(state) {
             return state.editRow;
+        },
+        getUser(state) {
+            return state.user;
         },
         getShawarmas(state) {
             return state.shawarmas;
@@ -26,6 +32,12 @@ const store = new Vuex.Store({
         },
         getShawarmaEditId(state) {
             return state.shawarmaEditId;
+        },
+        getAmountOfBucketElements(state) {
+            return state.amountOfBucketElements;
+        },
+        getBucketItems(state) {
+            return state.bucketItems.result;
         }
     },
     mutations: {
@@ -37,6 +49,12 @@ const store = new Vuex.Store({
         },
         setShawarmaEditId(state, id) {
             state.shawarmaEditId = id;
+        },
+        setAmountOfBucketElements(state, amount) {
+            state.amountOfBucketElements = amount;
+        },
+        setBucketItems(state, bucketItems) {
+            state.bucketItems = bucketItems;
         }
     },
     actions: {
@@ -87,6 +105,39 @@ const store = new Vuex.Store({
                 console.log('err', err);
             });
         },
+        addToBucket({state, dispatch}, shawarmaId) {
+            axios.post("http://localhost:3000/api/shawarmas/addToBucket", {
+                shawarmaId: shawarmaId,
+                userId: state.user.user_id,
+            }).then(r => {
+                console.log('r', r);
+                dispatch('fetchAmountOfBucketElements');
+            }).catch(err => {
+                console.log('err', err);
+            });
+        },
+        fetchAmountOfBucketElements({state, commit}) {
+            axios.get("http://localhost:3000/api/bucketElements", {
+                params: {
+                    userId: state.user.user_id,
+                }
+            }).then(r => {
+                console.log('r.data', r.data);
+                commit('setAmountOfBucketElements', r.data.amount[0].quantity);
+            }).catch(() => {
+            });
+        },
+        fetchBucketItems({state, commit}) {
+            axios.get("http://localhost:3000/api/bucketItems", {
+                params: {
+                    userId: state.user.user_id,
+                }
+            }).then(r => {
+                console.log('r.data', r.data);
+                commit('setBucketItems', r.data);
+            }).catch(() => {
+            });
+        },
         // eslint-disable-next-line no-empty-pattern
         register({state}, user) {
             axios.post("http://localhost:3000/api/shawarmas/register", {
@@ -104,7 +155,9 @@ const store = new Vuex.Store({
                 email: user.email,
                 password: user.password,
             }).then(r => {
+                console.log('r.data', r.data);
                 state.token = r.data.token;
+                state.user = r.data.user;
                 router.push('/main-content');
             }).catch(() => {
                 router.push('/login');

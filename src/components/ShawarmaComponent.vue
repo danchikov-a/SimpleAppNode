@@ -4,6 +4,7 @@
       <div>
         <img v-if="shawarma.fileName" width="100" height="100" alt="shawarma" :src="require(`../../server/uploads/${shawarma.fileName}`)">
       </div>
+
       <div style="display: flex; justify-content: space-around; flex-direction: column">
         <div style="text-align: left">
           {{ shawarma.name }}
@@ -15,9 +16,14 @@
           {{ shawarma.price }} руб.
         </div>
       </div>
-      <img width="25" height="25" src="../assets/trash-bucket.png" style="cursor:pointer;" @click="deleteShawarma(shawarma.id)">
-      <img width="25" height="25" src="../assets/edit.jpg" style="cursor:pointer;" @click="edit(shawarma)">
-      <div class="button-order">
+      <img width="25" height="25" src="../assets/trash-bucket.png" v-if="!isManager" style="cursor:pointer;" @click="deleteShawarma(shawarma.id)">
+      <img width="25" height="25" src="../assets/edit.jpg" v-if="!isManager" style="cursor:pointer;" @click="edit(shawarma)">
+      <div v-if="shawarma.quantity" style="display: flex; flex-direction: row; justify-content: space-around; ">
+        <div class="squared">-</div>
+        <div class="squared">{{ shawarma.quantity }}</div>
+        <div class="squared">+</div>
+      </div>
+      <div class="button-order" style="cursor: pointer" @click="addToBucket(shawarma.id)">
         Заказать
       </div>
     </div>
@@ -91,6 +97,7 @@ export default {
     },
     ...mapGetters({
       'shawarmaEditId': "getShawarmaEditId",
+      'getUser': 'getUser',
     }),
   },
   methods: {
@@ -102,6 +109,7 @@ export default {
       'saveShawarma': 'saveShawarma',
       'deleteShawarma': 'deleteShawarma',
       'updateShawarma': 'updateShawarma',
+      'addToBucket': 'addToBucket',
     }),
     onChangeFile(event) {
      this.shawarmaFilename = event.target.files[0].name;
@@ -111,6 +119,13 @@ export default {
         this.setShawarma(this.shawarmaToSave);
         this.saveShawarma()
       }
+    },
+    isManager() {
+      if (this.getUser != null) {
+        return this.getUser.role_id === 1;
+      }
+
+      return false;
     },
     update() {
 
@@ -146,5 +161,15 @@ export default {
   padding: 5px 20px;
   color: white;
   margin-top: 75px;
+}
+
+.squared {
+  border-radius: 15px;
+  border: 2px solid black;
+  padding-left: 6px;
+  padding-top: -10px;
+  width: 25px;
+  height: 25px;
+  font-weight: bold;
 }
 </style>

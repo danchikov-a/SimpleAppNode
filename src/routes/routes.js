@@ -5,6 +5,7 @@ import MainContent from "@/components/MainContent";
 import ProfileContent from "@/components/ProfileContent";
 import Authorization from "@/components/Authorization";
 import Registration from "@/components/Registration";
+import Bucket from "@/components/Bucket";
 
 Vue.use(VueRouter)
 
@@ -18,6 +19,11 @@ const routes = [
         path: '/profile-content',
         name: 'ProfileContent',
         component: ProfileContent
+    },
+    {
+        path: '/bucket',
+        name: 'Bucket',
+        component: Bucket
     },
     {
         path: '/',

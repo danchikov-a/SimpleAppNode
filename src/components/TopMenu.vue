@@ -14,11 +14,13 @@
       </div>
       <!-- on click add -->
 
-      <div style="font-size: 25px; font-weight: bold; cursor: pointer" v-if="!editRow" @click="changeEditRow">
-        +
-      </div>
-      <div style="font-size: 25px; font-weight: bold; cursor: pointer" v-else @click="changeEditRow">
-        -
+      <div v-if="isManager">
+        <div style="font-size: 25px; font-weight: bold; cursor: pointer" v-if="!editRow" @click="changeEditRow">
+          +
+        </div>
+        <div style="font-size: 25px; font-weight: bold; cursor: pointer" v-else @click="changeEditRow">
+          -
+        </div>
       </div>
     </div>
   </nav>
@@ -37,8 +39,16 @@ export default {
   computed: {
     ...mapGetters({
           editRow: 'getEditRow',
+          getUser: 'getUser',
         }
     ),
+    isManager() {
+      if (this.getUser != null) {
+        return this.getUser.role_id === 1;
+      }
+
+      return false;
+    }
   },
   methods: {
     ...mapMutations(['changeEditRow'])

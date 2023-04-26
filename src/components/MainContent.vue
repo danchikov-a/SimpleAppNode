@@ -36,6 +36,7 @@ export default {
     ...mapGetters({
       editRow: 'getEditRow',
       shawarmas: 'getShawarmas',
+      isManager: 'isManager',
     }),
   },
   methods: {

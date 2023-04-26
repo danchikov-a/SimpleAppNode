@@ -12,6 +12,6 @@ module.exports = class User {
     }
 
     getUser() {
-        return `SELECT password FROM users where email = '${this.email}'`;
+        return `SELECT * FROM users JOIN role_user on users.id = role_user.user_id  where email = '${this.email}'`;
     }
 }
