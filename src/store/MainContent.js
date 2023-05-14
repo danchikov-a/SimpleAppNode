@@ -16,6 +16,33 @@ const store = new Vuex.Store({
         user: null,
         bucketItems: [],
         amountOfBucketElements: 0,
+        minutes: [
+            {
+                id: 1,
+                value: 10,
+            },
+            {
+                id: 1,
+                value: 15,
+            },
+            {
+                id: 1,
+                value: 20,
+            }
+        ],
+        orders: [],
+        locations: [
+            {
+                id: 1,
+                caption: 'Каменка',
+            },
+            {
+                id: 2,
+                caption: 'Пушкинская',
+            },
+        ],
+        tempShawarmas: [],
+        searchText: '',
     },
     getters: {
         getEditRow(state) {
@@ -24,8 +51,20 @@ const store = new Vuex.Store({
         getUser(state) {
             return state.user;
         },
+        getLocations(state) {
+            return state.locations;
+        },
+        getSearchText(state) {
+            return state.searchText;
+        },
+        getOrders(state) {
+            return state.orders;
+        },
         getShawarmas(state) {
             return state.shawarmas;
+        },
+        getTempShawarmas(state) {
+            return state.tempShawarmas;
         },
         getShawarmaToSave(state) {
             return state.shawarmaToSave;
@@ -33,7 +72,14 @@ const store = new Vuex.Store({
         getShawarmaEditId(state) {
             return state.shawarmaEditId;
         },
+        getMinutes(state) {
+            return state.minutes;
+        },
         getAmountOfBucketElements(state) {
+            if (state.amountOfBucketElements === null) {
+                return 0;
+            }
+
             return state.amountOfBucketElements;
         },
         getBucketItems(state) {
@@ -53,9 +99,18 @@ const store = new Vuex.Store({
         setAmountOfBucketElements(state, amount) {
             state.amountOfBucketElements = amount;
         },
+        setOrders(state, orders) {
+            state.orders = orders;
+        },
+        setTempShawarmas(state, shawarmas) {
+            state.tempShawarmas = shawarmas;
+        },
         setBucketItems(state, bucketItems) {
             state.bucketItems = bucketItems;
-        }
+        },
+        setSearchText(state, searchText) {
+            state.searchText = searchText;
+        },
     },
     actions: {
         fetchShawarmas({state}) {
@@ -112,6 +167,19 @@ const store = new Vuex.Store({
             }).then(r => {
                 console.log('r', r);
                 dispatch('fetchAmountOfBucketElements');
+                dispatch('fetchBucketItems');
+            }).catch(err => {
+                console.log('err', err);
+            });
+        },
+        deleteFromBucket({state, dispatch}, shawarmaId) {
+            axios.post("http://localhost:3000/api/shawarmas/deleteFromBucket", {
+                shawarmaId: shawarmaId,
+                userId: state.user.user_id,
+            }).then(r => {
+                console.log('r', r);
+                dispatch('fetchAmountOfBucketElements');
+                dispatch('fetchBucketItems');
             }).catch(err => {
                 console.log('err', err);
             });
@@ -138,13 +206,32 @@ const store = new Vuex.Store({
             }).catch(() => {
             });
         },
+        fetchOrders({state, commit}) {
+            axios.get("http://localhost:3000/api/orders", {
+                params: {
+                    userId: state.user.user_id,
+                }
+            }).then(r => {
+                commit('setOrders', r.data);
+            }).catch(() => {
+            });
+        },
+        orderClicked({state, commit}) {
+            axios.post("http://localhost:3000/api/order/create", {
+                userId: state.user.user_id,
+            }).then(r => {
+                console.log('r.data', r.data);
+                commit('setBucketItems', r.data);
+            }).catch(() => {
+            });
+        },
         // eslint-disable-next-line no-empty-pattern
         register({state}, user) {
             axios.post("http://localhost:3000/api/shawarmas/register", {
                 name: user.name,
                 email: user.email,
                 password: user.password,
-            }, ).then(r => {
+            },).then(r => {
                 state.token = r.data.token;
                 cookie.set('token', state.token);
                 router.push('/main-content');

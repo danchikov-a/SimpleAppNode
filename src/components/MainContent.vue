@@ -1,9 +1,15 @@
 <template>
   <div class="qwe">
     <TopMenu></TopMenu>
-    <div class="row">
+    <div class="row" v-if="getSearchText === ''">
       <ShawarmaComponent class="col-4" v-if="editRow" :shawarma="null"></ShawarmaComponent>
-      <div style="width: 33%" class="col-4" :key="shawarma" v-for="shawarma in shawarmas">
+      <div style="width: 32%" class="col-4" :key="shawarma" v-for="shawarma in shawarmas">
+        <ShawarmaComponent :shawarma="shawarma"></ShawarmaComponent>
+      </div>
+    </div>
+    <div class="row" v-else>
+      <ShawarmaComponent class="col-4" v-if="editRow" :shawarma="null"></ShawarmaComponent>
+      <div style="width: 32%" class="col-4" :key="shawarma" v-for="shawarma in tempShawarmas">
         <ShawarmaComponent :shawarma="shawarma"></ShawarmaComponent>
       </div>
     </div>
@@ -36,6 +42,8 @@ export default {
     ...mapGetters({
       editRow: 'getEditRow',
       shawarmas: 'getShawarmas',
+      tempShawarmas: 'getTempShawarmas',
+      getSearchText: 'getSearchText',
       isManager: 'isManager',
     }),
   },
@@ -58,6 +66,7 @@ export default {
   justify-content: space-between;
   padding-bottom: 7%;
   margin-top: 2%;
+  padding-right: 2%;
 }
 .qwe {
   background: url("../assets/загружено.jpg") no-repeat center center fixed;
@@ -65,5 +74,7 @@ export default {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+  overflow:hidden;
 }
+
 </style>

@@ -13,7 +13,7 @@ const routes = [
     {
         path: '/main-content',
         name: 'MainContent',
-        component: MainContent
+        component: MainContent,
     },
     {
         path: '/profile-content',

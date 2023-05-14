@@ -13,6 +13,7 @@ const bcrypt = require('bcryptjs');
 const cookieParser = require('cookie-parser');
 const User = require("./models/user");
 const {resolve} = require("@babel/core/lib/vendor/import-meta-resolve");
+const Order = require("./models/order");
 const jwtKey = "my_secret_key"
 
 app.use(bodyParser.json());
@@ -76,6 +77,20 @@ app.get("/api/bucketItems", function (request, response) {
     });
 });
 
+
+app.get("/api/orders", function (request, response) {
+    let userId = request.query.userId;
+
+    database.query(Order.getOrders(userId), function (error, result) {
+        if (error) {
+            return console.log(error.message);
+        }
+
+        console.log('result', result);
+        response.send(result);
+    });
+});
+
 app.post("/api/shawarmas/create", function (request, response) {
     if (!request.body) {
         return response.sendStatus(400);
@@ -123,6 +138,27 @@ app.post("/api/shawarmas/update", function (request, response) {
     });
 });
 
+app.post("/api/order/create", function (request, response) {
+    if (!request.body) {
+        return response.sendStatus(400);
+    }
+    let userId = request.body.userId;
+
+    database.query(Order.createOrder(userId), function (error, result) {
+        if (error) {
+            return console.log(error.message)
+        }
+
+        database.query(Bucket.clearBucket(userId), function (error, result) {
+            if (error) {
+                return console.log(error.message)
+            }
+
+            response.send(result);
+        });
+    });
+});
+
 app.post("/api/shawarmas/addToBucket", function (request, response) {
     if (!request.body) {
         return response.sendStatus(400);
@@ -148,6 +184,33 @@ app.post("/api/shawarmas/addToBucket", function (request, response) {
             });
         } else {
             database.query(Bucket.addBucketElement(userId, shawarmaId), function (error, result) {
+                if (error) {
+                    return console.log(error.message)
+                }
+
+                response.send(result);
+            });
+        }
+    });
+});
+
+app.post("/api/shawarmas/deleteFromBucket", function (request, response) {
+    if (!request.body) {
+        return response.sendStatus(400);
+    }
+
+    let shawarmaId = request.body.shawarmaId;
+    let userId = request.body.userId;
+
+    console.log('sh user', shawarmaId, userId);
+
+    database.query(Bucket.getBucketElement(userId, shawarmaId), function (error, result) {
+        if (error) {
+            return console.log(error.message)
+        }
+
+        if (result.length !== 0) {
+            database.query(Bucket.updateBucketElement(userId, shawarmaId, --result[0].quantity), function (error, result) {
                 if (error) {
                     return console.log(error.message)
                 }

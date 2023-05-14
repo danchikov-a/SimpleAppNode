@@ -16,14 +16,14 @@
           {{ shawarma.price }} руб.
         </div>
       </div>
-      <img width="25" height="25" src="../assets/trash-bucket.png" v-if="!isManager" style="cursor:pointer;" @click="deleteShawarma(shawarma.id)">
-      <img width="25" height="25" src="../assets/edit.jpg" v-if="!isManager" style="cursor:pointer;" @click="edit(shawarma)">
+      <img width="25" height="25" class="del-edit-icons" src="../assets/trash-bucket.png" v-if="isManager && !shawarma.quantity" style="cursor:pointer;" @click="deleteShawarma(shawarma.id)">
+      <img width="25" height="25" class="del-edit-icons" src="../assets/edit.jpg" v-if="isManager && !shawarma.quantity" style="cursor:pointer;" @click="edit(shawarma)">
       <div v-if="shawarma.quantity" style="display: flex; flex-direction: row; justify-content: space-around; ">
-        <div class="squared">-</div>
-        <div class="squared">{{ shawarma.quantity }}</div>
-        <div class="squared">+</div>
+        <div class="squared" @click="deleteFromBucket(shawarma.shawarma_id)">-</div>
+        <div class="quantity-num">{{ shawarma.quantity }}</div>
+        <div class="squared" @click="addToBucket(shawarma.shawarma_id)">+</div>
       </div>
-      <div class="button-order" style="cursor: pointer" @click="addToBucket(shawarma.id)">
+      <div class="button-order" style="cursor: pointer" @click="addToBucket(shawarma.id);" v-else>
         Заказать
       </div>
     </div>
@@ -109,6 +109,7 @@ export default {
       'saveShawarma': 'saveShawarma',
       'deleteShawarma': 'deleteShawarma',
       'updateShawarma': 'updateShawarma',
+      'deleteFromBucket': 'deleteFromBucket',
       'addToBucket': 'addToBucket',
     }),
     onChangeFile(event) {
@@ -164,12 +165,30 @@ export default {
 }
 
 .squared {
-  border-radius: 15px;
-  border: 2px solid black;
-  padding-left: 6px;
-  padding-top: -10px;
+  border-radius: 5px;
+
+  padding-left: 8px;
+  padding-top: -9px;
+  background: lightgrey;
   width: 25px;
   height: 25px;
   font-weight: bold;
+  cursor: pointer;
+}
+.button-order:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+.quantity-num {
+  width: 25px;
+  padding-left: 8px;
+  height: 25px;
+  font-weight: bold;
+}
+.del-edit-icons:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
 }
 </style>
