@@ -1,12 +1,24 @@
 <template>
   <nav class="top-menu">
-    <b-modal id="qwe-modal" title="Заказ" header-class="modal-class" footer-class="modal-class">
+    <b-modal id="message-modal" title="Заказ" header-class="modal-class" footer-class="modal-class">
+      <template #modal-header>
+        <div class="text-black text-center" style="text-align: center">Сообщение</div>
+      </template>
+
+      <template #modal-footer>
+        <b-button style="background: red; text-align: center" @click="sendMessage(); $bvModal.hide('message-modal')">Готово</b-button>
+      </template>
+
+      <textarea style="width: 100%" v-model="notification" />
+    </b-modal>
+
+    <b-modal id="last-stage-order-modal" title="Заказ" header-class="modal-class" footer-class="modal-class">
       <template #modal-header>
         <div class="text-black text-center" style="text-align: center">Пункт самовывоза</div>
       </template>
 
       <template #modal-footer>
-        <b-button style="background: red; text-align: center" @click="$bvModal.hide('qwe-modal')">Готово</b-button>
+        <b-button style="background: red; text-align: center" @click="$bvModal.hide('last-stage-order-modal')">Готово</b-button>
       </template>
 
       <iframe v-if="currentLocation?.id === 1" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d37606.196255718394!2d27.388310952442936!3d53.907093905724565!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46dbdb4c0f505379%3A0xd7ceae26ddced6f1!2sPapa%20Doner!5e0!3m2!1sru!2sby!4v1683841604028!5m2!1sru!2sby" style="width: 100%; height: 250px" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
@@ -19,32 +31,20 @@
         </div>
       </div>
     </b-modal>
-    <b-sidebar id="sidebar-1" title="Sidebar" bg-variant="black" backdrop :backdrop-variant="white" style="background: black" width="15%" no-header>
+    <b-sidebar id="sidebar-1" title="Sidebar" bg-variant="black" backdrop :backdrop-variant="white" style="background: black" width="20%" no-header>
       <div class="px-3 py-2">
         <ul>
-          <li>
-            <img :width="menuItemsSize" :height="menuItemsSize" alt="profile" src="../assets/profile.png">
-            Профиль
+          <li @click="$bvModal.show('message-modal')">
+<!--            <img :width="menuItemsSize" :height="menuItemsSize" alt="profile" src="../assets/profile.png">-->
+            Отправить сообщение
           </li>
-          <li>
-            <img style="color: black" :width="menuItemsSize" :height="menuItemsSize" alt="menu"
-                 src="../assets/menu-not-active.png">
-            Меню
-            <i class="bi bi-0-circle"></i>
-          </li>
-          <li>
-            <img class="bucket-image" :width="menuItemsSize" :height="menuItemsSize" alt="bucket"
-                 src="../assets/bucket.png">
-            Корзина
-          </li>
-          <li>История заказов</li>
         </ul>
       </div>
     </b-sidebar>
       <div class="menu-items">
           <img style="color: black" v-b-toggle.sidebar-1 id="dropdownMenuButton1" :width="menuItemsSize" :height="menuItemsSize" alt="left-menu"
                src="../assets/left-menu.png">
-        <div style="cursor: pointer;" @click="$bvModal.show('qwe-modal')">
+        <div style="cursor: pointer;" @click="$bvModal.show('last-stage-order-modal')">
           <div v-if="currentLocation === null">
             <label>Выбрать пункт самовывоза</label>
             <img style="color: black;margin-left: 5px" width="10" height="10" alt="menu" src="../assets/arrow-down.png">
@@ -76,13 +76,14 @@
 </template>
 
 <script>
-import {mapGetters, mapMutations} from "vuex";
+import { mapGetters, mapMutations} from "vuex";
 
 export default {
   name: "TopMenu",
   data() {
     return {
       menuItemsSize: 25,
+      notification: null,
     }
   },
   computed: {
@@ -124,7 +125,29 @@ export default {
     applySearch() {
       this.setTempShawarmas(this.getShawarmas.filter(shawarma => shawarma.name.search(this.getSearchText) !== -1));
     },
-  }
+    sendMessage() {
+      console.log('Sending message:', this.notification);
+
+      this.socket.send(this.notification);
+    }
+  },
+  created() {
+    this.socket = new WebSocket('ws://localhost:3001');
+
+    this.socket.addEventListener('open', () => {
+      console.log('WebSocket connection opened');
+      this.socket.send('open');
+    });
+
+    this.socket.addEventListener('message', (event) => {
+      console.log('get data', event.data);
+     // var blob = event.data;
+    });
+
+    this.socket.addEventListener('close', () => {
+      console.log('WebSocket connection closed');
+    });
+  },
 }
 </script>
 
@@ -147,5 +170,6 @@ export default {
 li {
   color: white;
   list-style-type: none;
+  cursor: pointer;
 }
 </style>

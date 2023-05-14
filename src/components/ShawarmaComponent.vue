@@ -99,6 +99,13 @@ export default {
       'shawarmaEditId': "getShawarmaEditId",
       'getUser': 'getUser',
     }),
+    isManager() {
+      if (this.getUser != null) {
+        return this.getUser.role_id === 1;
+      }
+
+      return false;
+    },
   },
   methods: {
     ...mapMutations({
@@ -120,13 +127,6 @@ export default {
         this.setShawarma(this.shawarmaToSave);
         this.saveShawarma()
       }
-    },
-    isManager() {
-      if (this.getUser != null) {
-        return this.getUser.role_id === 1;
-      }
-
-      return false;
     },
     update() {
 

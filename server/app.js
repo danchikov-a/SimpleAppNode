@@ -42,7 +42,7 @@ function requireAuth(req, res, next) {
     }
 }
 
-app.get("/api/shawarmas",requireAuth, function (request, response) {
+app.get("/api/shawarmas", requireAuth, function (request, response) {
     database.query(Shawarma.index(), function (error, result) {
         if (error) {
             return console.log(error.message);
@@ -260,15 +260,11 @@ app.post('/api/shawarmas/authorize', async function (request, response) {
 
     let user = new User(userFromRequest.name, userFromRequest.email, hashedPassword);
 
-    let pass = null;
-    let q = user.getUser();
-
     database.query(user.getUser(), function (error, result) {
         if (error) {
             return console.log(error.message)
         }
 
-        console.log('res', result[0]);
         bcrypt.compare(userFromRequest.password, result[0].password, function(err, res) {
             if (err){
                 // handle error
