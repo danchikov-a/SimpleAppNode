@@ -43,10 +43,14 @@ const store = new Vuex.Store({
         ],
         tempShawarmas: [],
         searchText: '',
+        currentLocation: null,
     },
     getters: {
         getEditRow(state) {
             return state.editRow;
+        },
+        getCurrentLocation(state) {
+            return state.currentLocation;
         },
         getUser(state) {
             return state.user;
@@ -107,6 +111,9 @@ const store = new Vuex.Store({
         },
         setBucketItems(state, bucketItems) {
             state.bucketItems = bucketItems;
+        },
+        setCurrentLocation(state, location) {
+            state.currentLocation = location;
         },
         setSearchText(state, searchText) {
             state.searchText = searchText;
@@ -216,12 +223,15 @@ const store = new Vuex.Store({
             }).catch(() => {
             });
         },
-        orderClicked({state, commit}) {
+        orderClicked({state, commit, dispatch}, orderInformation) {
             axios.post("http://localhost:3000/api/order/create", {
                 userId: state.user.user_id,
+                location: state.currentLocation,
+                orderInformation: orderInformation,
             }).then(r => {
                 console.log('r.data', r.data);
                 commit('setBucketItems', r.data);
+                dispatch('fetchAmountOfBucketElements');
             }).catch(() => {
             });
         },

@@ -142,9 +142,15 @@ app.post("/api/order/create", function (request, response) {
     if (!request.body) {
         return response.sendStatus(400);
     }
-    let userId = request.body.userId;
+    console.log('request.body', request.body);
 
-    database.query(Order.createOrder(userId), function (error, result) {
+    let userId = request.body.userId;
+    let locationId = request.body.location?.id;
+    let userName = request.body.orderInformation?.name;
+    let userPhoneNumber = request.body.orderInformation?.phoneNumber;
+    let amountOfMinutes = request.body.orderInformation?.amountOfMinutes;
+
+    database.query(Order.createOrder(userId, locationId, userName, userPhoneNumber, amountOfMinutes), function (error, result) {
         if (error) {
             return console.log(error.message)
         }

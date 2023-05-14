@@ -1,8 +1,10 @@
 <template>
-  <div class="qwe" >
+  <div style="padding-top: 2%; padding-bottom: 7%;" class="qwe">
     <TopMenu></TopMenu>
-    <div style="margin-right: 2%" :key="order" class="row md-1" v-for="order in orders">
-      <OrderComponent :order="order"/>
+    <div :key="order" class="row" style=" display: flex; flex-wrap: wrap;" v-for="order in orders">
+      <div class="col-4">
+        <OrderComponent :order="order"></OrderComponent>
+      </div>
     </div>
     <BottomMenu :is-menu-active="false" :is-profile-active="true"></BottomMenu>
   </div>
@@ -38,9 +40,6 @@ export default {
 </script>
 
 <style scoped>
-.row {
-  margin-top: 3%;
-}
 
 .qwe {
   background: url("../assets/загружено.jpg") no-repeat center center fixed;
@@ -48,5 +47,6 @@ export default {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+  overflow:hidden;
 }
 </style>

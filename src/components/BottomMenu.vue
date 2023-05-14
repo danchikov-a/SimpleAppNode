@@ -7,23 +7,23 @@
 
       <template #modal-footer>
         <b-button style="background: green; text-align: center"
-                  @click="orderClicked(); $bvModal.hide('order-modal'); $bvModal.hide('bucket-modal');">Заказать
+                  @click="createOrder();">Заказать
         </b-button>
       </template>
       <div style="width: 100%" class="col-4">
-        <form>
+        <form class="">
           <div class="form-outline mb-4">
-            <input type="email" id="form2Example11" class="form-control"/>
+            <input v-model="orderToAdd.name" type="email" id="form2Example11" class="form-control danger"/>
             <label class="form-label" for="form2Example11">Ваше имя</label>
           </div>
           <div class="form-outline mb-4">
-            <input type="email" id="form2Example11" class="form-control"/>
+            <input v-model="orderToAdd.phoneNumber" type="email" id="form2Example11" class="form-control"/>
             <label class="form-label" for="form2Example11">Ваш номер телефона</label>
           </div>
           <div class="form-outline mb-4">
-            <select id="form2Example11" class="form-control">
+            <select v-model="orderToAdd.amountOfMinutes" id="form2Example11" class="form-control">
               <option value="null"></option>
-              <option v-for="minute in minutes" :key="minute" value="">{{ minute.value }}</option>
+              <option v-for="minute in minutes" :key="minute" :value="minute.value">{{ minute.value }}</option>
             </select>
             <label class="form-label" for="form2Example11">Через сколько минут заберете</label>
           </div>
@@ -47,11 +47,17 @@
       </template>
 
       <template #modal-footer>
-        <b-button style="background: green; text-align: center" @click="$bvModal.show('order-modal')">Далее</b-button>
+        <b-button :disabled="bucketItems?.length === 0" style="background: green; text-align: center" @click="$bvModal.show('order-modal')">Далее</b-button>
       </template>
-      <div style="width: 100%" class="col-4" :key="bucketItem" v-for="bucketItem in bucketItems">
-        <ShawarmaComponent :shawarma="bucketItem"></ShawarmaComponent>
+      <div v-if="bucketItems?.length !== 0">
+        <div style="width: 100%" class="col-4" :key="bucketItem" v-for="bucketItem in bucketItems">
+          <ShawarmaComponent :shawarma="bucketItem"></ShawarmaComponent>
+        </div>
       </div>
+      <div v-else>
+        Упс... корзина пустая
+      </div>
+
     </b-modal>
     <div class="menu-items">
       <router-link :to="{name: 'MainContent'}" class="menu-item">
@@ -89,6 +95,16 @@ export default {
   data() {
     return {
       menuItemsSize: 25,
+      orderToAdd: {
+        name: null,
+        phoneNumber: null,
+        amountOfMinutes: null,
+      },
+      errors: {
+        name: false,
+        phoneNumber: false,
+        amountOfMinutes: false,
+      }
     }
   },
   watch: {
@@ -135,6 +151,20 @@ export default {
           'orderClicked': 'orderClicked',
         }
     ),
+    createOrder() {
+      this.checkErrors();
+
+      if (this.orderToAdd.name !== null && this.orderToAdd.phoneNumber !== null && this.orderToAdd.amountOfMinutes !== null) {
+        this.orderClicked(this.orderToAdd);
+        this.$bvModal.hide('order-modal');
+        this.$bvModal.hide('bucket-modal');
+      }
+    },
+    checkErrors() {
+      this.errors.name = this.orderToAdd.name === null;
+      this.errors.phoneNumber = this.orderToAdd.phoneNumber === null;
+      this.errors.amountOfMinutes = this.orderToAdd.amountOfMinutes === null;
+    },
   },
   computed: {
     ...mapGetters({

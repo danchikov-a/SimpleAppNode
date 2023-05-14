@@ -83,8 +83,6 @@ export default {
   data() {
     return {
       menuItemsSize: 25,
-      currentLocation: null,
-
     }
   },
   computed: {
@@ -94,8 +92,17 @@ export default {
           locations: 'getLocations',
           getShawarmas: 'getShawarmas',
           getSearchText: 'getSearchText',
+          getCurrentLocation: 'getCurrentLocation',
         }
     ),
+    currentLocation: {
+      get() {
+        return this.getCurrentLocation;
+      },
+      set(value) {
+        this.setCurrentLocation(value);
+      }
+    },
     searchText: {
       get() {
         return this.getSearchText;
@@ -113,7 +120,7 @@ export default {
     },
   },
   methods: {
-    ...mapMutations(['changeEditRow', 'setSearchText', 'setTempShawarmas']),
+    ...mapMutations(['changeEditRow', 'setSearchText', 'setTempShawarmas', 'setCurrentLocation']),
     applySearch() {
       this.setTempShawarmas(this.getShawarmas.filter(shawarma => shawarma.name.search(this.getSearchText) !== -1));
     },

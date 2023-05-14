@@ -1,14 +1,18 @@
 <template>
   <div>
     <div class="shawarma-element">
-      <div>
-
-      </div>
-
       <div style="display: flex; justify-content: space-around; flex-direction: column">
         <div style="text-align: left">
+          <span>Имя:</span> {{ order?.name }}
         </div>
         <div style="text-align: left; color: grey">
+          <span>Номер телефона:</span> {{ order?.phone_number }}
+        </div>
+        <div style="text-align: left; color: grey">
+          <span>Количество минут:</span> {{ order?.amount_of_minutes }}
+        </div>
+        <div style="text-align: left; color: grey">
+          <span>Точка вывоза:</span> {{ exportPoint?.caption }}
         </div>
         <div style="text-align: left; color: red; font-weight: bold">
           {{ createdDate }}
@@ -20,14 +24,17 @@
 
 <script>
 
+import {mapGetters} from "vuex";
+
 export default {
   name: "ShawarmaComponent",
   data() {
-    return {
-
-    }
+    return {}
   },
   computed: {
+    ...mapGetters({
+      locations: 'getLocations',
+    }),
     createdDate: {
       get() {
         //TODO extract to mixin
@@ -37,6 +44,9 @@ export default {
         let dateParts = date.split("-");
         return `${dateParts[2]}.${dateParts[1]}.${dateParts[0]} ${time}`;
       }
+    },
+    exportPoint() {
+      return this.locations.find(location => location.id === this.order?.export_point)
     },
   },
   props: {
@@ -53,9 +63,9 @@ export default {
   display: flex;
   box-shadow: 5px 5px 5px 5px grey;
   border-radius: 5px;
-  justify-content: space-around;
   padding-top: 25px;
   padding-bottom: 25px;
+  padding-left: 15px;
   margin-left: 25px;
   margin-top: 20px;
   background-color: white;
@@ -70,6 +80,9 @@ export default {
   margin-top: 75px;
 }
 
+span {
+  font-weight: bold;
+}
 .button-order:hover {
   -webkit-transform: scale(1.2);
   -ms-transform: scale(1.2);
@@ -87,6 +100,7 @@ export default {
   font-weight: bold;
   cursor: pointer;
 }
+
 .quantity-num {
   width: 25px;
   padding-left: 8px;
