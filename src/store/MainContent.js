@@ -44,10 +44,14 @@ const store = new Vuex.Store({
         tempShawarmas: [],
         searchText: '',
         currentLocation: null,
+        notifications: [],
     },
     getters: {
         getEditRow(state) {
             return state.editRow;
+        },
+        getNotifications(state) {
+            return state.notifications;
         },
         getCurrentLocation(state) {
             return state.currentLocation;
@@ -105,6 +109,9 @@ const store = new Vuex.Store({
         },
         setOrders(state, orders) {
             state.orders = orders;
+        },
+        setNotifications(state, notifications) {
+            state.notifications = notifications;
         },
         setTempShawarmas(state, shawarmas) {
             state.tempShawarmas = shawarmas;
@@ -256,6 +263,24 @@ const store = new Vuex.Store({
                 state.token = r.data.token;
                 state.user = r.data.user;
                 router.push('/main-content');
+            }).catch(() => {
+                router.push('/login');
+            });
+        },
+        fetchNotifications({state, commit}) {
+            axios.get("http://localhost:3003/api/notifications", {
+                params: {
+                    query: `
+                        query {
+                            notifications {
+                                id
+                                message
+                            }
+                        }`,
+                }
+            }).then(r => {
+                console.log(state.user);
+                commit('setNotifications', r.data.data.notifications);
             }).catch(() => {
                 router.push('/login');
             });

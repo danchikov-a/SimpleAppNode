@@ -34,4 +34,4 @@ server.on('connection', (socket) => {
     });
 });
 
-console.log('WebSocket server started on port 3000');
+console.log('WebSocket server started on port 3001');

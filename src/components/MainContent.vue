@@ -49,11 +49,13 @@ export default {
   },
   methods: {
     ...mapActions({
-      fetchShawarmas: "fetchShawarmas"
+      fetchShawarmas: "fetchShawarmas",
+      fetchNotifications: 'fetchNotifications',
     }),
   },
   mounted() {
     this.fetchShawarmas();
+    this.fetchNotifications();
   }
 }
 </script>
